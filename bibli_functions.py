@@ -74,12 +74,12 @@ def stats_per_year(data, y, ytype='Year'):
         if len(papers)>0:
             n_papers.append(len(papers))
             n1_papers.append(len(papers[(papers['first author']==int(a))]))
-            n_citations.append(np.mean(papers['citedby-count']))
+            n_citations.append(np.sum(papers['citedby-count'])) # total citations received by this author for publication from this year
             n_authors.append(np.mean(papers['n authors']))
         else:
             none_count+=1
             #print('No papers found for:', a)
-    #print(np.mean(papers['citedby-count']))  
+    #print(np.mean(papers['citedby-count'])) 
     return n_papers, n1_papers, n_citations, n_authors
 
 
@@ -104,7 +104,7 @@ def aggregate_data(data, save_path, years=np.arange(1995, 2022, 1), ytype='Year'
         weighted_av = np.average(paps, weights=cits)
         weighted.append(weighted_av)
         weighted_variance = np.average((paps-weighted_av)**2, weights=cits)
-        weighted_e.append(weighted_variance / slp)
+        weighted_e.append(np.sqrt(weighted_variance) / slp)
         
         cit.append(np.mean(cits)); cit_e.append(np.std(cits) / slp)
         auth.append(np.mean(auths)); auth_e.append(np.std(auths) / slp)
